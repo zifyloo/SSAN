@@ -27,36 +27,6 @@ def save_checkpoint(state, opt):
     torch.save(state, filename)
 
 
-def load_checkpoint(opt):
-    filename = os.path.join(opt.save_path, 'model') + '/' + str(opt.start_epoch) + '.pth.tar'
-    state = torch.load(filename)
-
-    return state
-
-
-def calculate_similarity(image_embedding, text_embedding):
-    image_embedding = image_embedding.view(image_embedding.size(0), -1)
-    text_embedding = text_embedding.view(text_embedding.size(0), -1)
-    image_embedding_norm = image_embedding / (image_embedding.norm(dim=1, keepdim=True) + 1e-8)
-    text_embedding_norm = text_embedding / (text_embedding.norm(dim=1, keepdim=True) + 1e-8)
-
-    similarity = torch.mm(image_embedding_norm, text_embedding_norm.t())
-
-    similarity_match = torch.sum(image_embedding_norm * text_embedding_norm, dim=1)
-
-    return similarity, similarity_match
-
-
-def calculate_lambda_hr(similarity_matching_hr, similarity_matching):
-    lambda_hr = abs(similarity_matching_hr.detach()) / abs(similarity_matching.detach())
-    ones = torch.ones_like(lambda_hr)
-    data = torch.ge(ones, lambda_hr).float()
-    data_2 = torch.ge(lambda_hr, ones).float()
-    lambda_hr = data * lambda_hr + data_2
-
-    return lambda_hr
-
-
 def train(opt):
     opt.device = torch.device('cuda:{}'.format(opt.GPU_id))
 
@@ -98,30 +68,30 @@ def train(opt):
         for param in optimizer.param_groups:
             logging.info('lr:{}'.format(param['lr']))
 
-        for times, [image, label, caption_code, caption_length, caption_code_hr, caption_length_hr] in enumerate(
+        for times, [image, label, caption_code, caption_length, caption_code_cr, caption_length_cr] in enumerate(
                 train_dataloader):
 
             image = Variable(image.to(opt.device))
             label = Variable(label.to(opt.device))
             caption_code = Variable(caption_code.to(opt.device).long())
             caption_length = caption_length.to(opt.device)
-            caption_code_hr = Variable(caption_code_hr.to(opt.device).long())
-            caption_length_hr = caption_length_hr.to(opt.device)
+            caption_code_cr = Variable(caption_code_cr.to(opt.device).long())
+            caption_length_cr = caption_length_cr.to(opt.device)
 
             img_global, img_local, img_non_local, txt_global, txt_local, txt_non_local = network(image, caption_code,
                                                                                                  caption_length)
 
-            txt_global_hr, txt_local_hr, txt_non_local_hr = network.txt_embedding(caption_code_hr, caption_length_hr)
+            txt_global_cr, txt_local_cr, txt_non_local_cr = network.txt_embedding(caption_code_cr, caption_length_cr)
 
             id_loss_global = id_loss_fun_global(img_global, txt_global, label)
             id_loss_local = id_loss_fun_local(img_local, txt_local, label)
             id_loss_non_local = id_loss_fun_non_local(img_non_local, txt_non_local, label)
             id_loss = id_loss_global + (id_loss_local + id_loss_non_local) * 0.5
 
-            cr_loss_global = cr_loss_fun(img_global, txt_global, txt_global_hr, label, epoch >= opt.epoch_begin)
-            cr_loss_local = cr_loss_fun(img_local, txt_local, txt_local_hr, label, epoch >= opt.epoch_begin)
+            cr_loss_global = cr_loss_fun(img_global, txt_global, txt_global_cr, label, epoch >= opt.epoch_begin)
+            cr_loss_local = cr_loss_fun(img_local, txt_local, txt_local_cr, label, epoch >= opt.epoch_begin)
             cr_loss_non_local = cr_loss_fun(img_non_local, txt_non_local,
-                                            txt_non_local_hr, label, epoch >= opt.epoch_begin)
+                                            txt_non_local_cr, label, epoch >= opt.epoch_begin)
 
             ranking_loss = cr_loss_global + (cr_loss_local + cr_loss_non_local) * 0.5
 
@@ -169,8 +139,3 @@ def train(opt):
 if __name__ == '__main__':
     opt = options().opt
     train(opt)
-
-
-
-
-
