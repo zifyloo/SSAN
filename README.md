@@ -68,7 +68,7 @@ sh experiments/ICFG-PEDES/test.sh
 
 ## Results on CUHK-PEDES and ICFG-PEDES
 
-**Our Results on CUHK-PEDES dataset **
+**Our Results on CUHK-PEDES dataset**
 
 <img src="./figure/CUHK-PEDES_result.GIF">
 
