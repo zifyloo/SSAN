@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/)
 ![PyTorch](https://img.shields.io/badge/pytorch-1.5.0-%237732a8) 
 
-We provide the code for reproducing result of our  paper [**Semantically Self-Aligned Network for Text-to-Image Part-aware Person Re-identification**](https://arxiv.org/pdf/2107.12666.pdf). Coding with pytorch,
+We provide the code for reproducing result of our  paper [**Semantically Self-Aligned Network for Text-to-Image Part-aware Person Re-identification**](https://arxiv.org/pdf/2107.12666.pdf). 
 
 ## Getting Started
 #### Dataset Preparation
