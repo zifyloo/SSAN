@@ -42,8 +42,9 @@ class TextExtract(nn.Module):
                                                                   sort_text_length,
                                                                   batch_first=True)
 
-        self.lstm.flatten_parameters()
-        packed_feature, [hn, _] = lstm(packed_text_embedding)  # [hn, cn]
+        
+        # self.lstm.flatten_parameters()
+        packed_feature, _ = lstm(packed_text_embedding)  # [hn, cn]
         total_length = text_embedding.size(1)
         sort_feature = nn.utils.rnn.pad_packed_sequence(packed_feature,
                                                         batch_first=True,
