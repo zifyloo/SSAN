@@ -46,7 +46,7 @@ We provide the code for reproducing result of our  paper [**Semantically Self-Al
    
    ~~~
 
-   Note that our  ICFG-PEDES is collect from [MSMT17](https://github.com/pkuvmc/PTGAN) and thus we keep its storage structure in order to avoid the loss of information such as camera label, shooting time, etc. Therefore, the file `test`and `train` here are not the way ICFG-PEDES is divided. The exact division of ICFG-PEDES is determined by `ICFG-PDES.json`. The `ICFG-PDES.json` is organized liked the `reid_raw.json` in [CUHK-PEDES](https://github.com/ShuangLI59/Person-Search-with-Natural-Language-Description) .
+   Note that our  ICFG-PEDES is collect from [MSMT17](https://github.com/pkuvmc/PTGAN) and thus we keep its storage structure in order to avoid the loss of information such as camera label, shooting time, etc. Therefore, the file `test`and `train` here are not the way ICFG-PEDES is divided. The exact division of ICFG-PEDES is determined by `ICFG-PDES.json`. The `ICFG-PDES.json` is organized like the `reid_raw.json` in [CUHK-PEDES](https://github.com/ShuangLI59/Person-Search-with-Natural-Language-Description) .
 
    Please request the ICFG-PEDES database from [chxding@scut.edu.cn](mailto:chxding@scut.edu.cn) and then run the `process_ICFG_data.py` as follow:
 
